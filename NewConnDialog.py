@@ -154,9 +154,13 @@ class NewConnDialog(QtWidgets.QDialog):
                 self.cursor=conname    
         else:
             if self.cursor != conname:
-                self.conf.delete_section(self.cursor) 
-                self.conf.add_section(conname)    
-                self.cursor=conname 
+                if conname in self.conf.cfg_list():
+                    QMessageBox.about(self,'提示','链接名已存在')
+                    return ''
+                else:
+                    self.conf.delete_section(self.cursor) 
+                    self.conf.add_section(conname)    
+                    self.cursor=conname 
         self.conf.set_item(self.cursor,'conname',conname)
         self.conf.set_item(self.cursor,'hostname',hostname)
         self.conf.set_item(self.cursor,'port',port)
@@ -190,7 +194,7 @@ if __name__=="__main__":
     
     app=QtWidgets.QApplication(sys.argv)
 
-    form=Ui_NewConnDialog()
+    form=NewConnDialog()
     form.show()
     sys.exit(app.exec_())
 
