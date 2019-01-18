@@ -38,20 +38,27 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
         #新建菜单
         self.action_new = QtWidgets.QAction(MainWindow)
         self.action_new.setObjectName("action_new")
         self.menu.addAction(self.action_new)
-        self.menubar.addAction(self.menu.menuAction())
         self.action_new.triggered.connect(self.newConn)
 
         #导入
         self.action_import = QtWidgets.QAction(MainWindow)
         self.action_import.setObjectName("action_import")
         self.menu.addAction(self.action_import)
-        self.menubar.addAction(self.menu.menuAction())
         self.action_import.triggered.connect(self.importConn)
 
+        #打开
+        self.action_open = QtWidgets.QAction(MainWindow)
+        self.action_open.setObjectName("action_open")
+        self.menu.addAction(self.action_open)
+        self.action_open.triggered.connect(self.openConn)
+
+
+        self.menubar.addAction(self.menu.menuAction())
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -66,22 +73,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.action_import.setText(_translate("MainWindow", "导入"))
         self.action_import.setShortcut(_translate("MainWindow", "Ctrl+I"))
 
+        self.action_open.setText(_translate("MainWindow", "打开(&O)"))
+        self.action_open.setShortcut(_translate("MainWindow", "Ctrl+O"))
+
     def newConn(self):
         self.conn=Ui_NewConnDialog()
-        self.conn.show()
+        self.conn.Signal_OpenDb.connect(self.openDb)
+        resutl=self.conn.exec_()
         # self.conn.raise_()
 
     def importConn(self):
         file,ok=QFileDialog.getOpenFileName(None, 'Save File', os.getenv('HOME'))
-
-    def ConnDb(self):
-        try:
-            self.db = pymysql.connect(host='127.0.0.1', port=3306, user='root', password='qqdyw', db='person',charset='utf8',)
-            self.cur = self.db.cursor()
-            QMessageBox.about(self,'connetction','successfully connnected to db')
-        except mdb.Error as e:
-            QMessageBox.about(self,'connection','Not Connected Successfully')
-
+    
+    def openConn(self):
+        pass
+    
+    def openDb(self,data):
+        print(data) 
 
 
 if __name__=="__main__":
