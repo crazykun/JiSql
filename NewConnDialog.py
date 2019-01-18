@@ -6,12 +6,13 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from DBManager import DBManager
 from Config import Config
 
-class Ui_NewConnDialog(QtWidgets.QDialog):
+class NewConnDialog(QtWidgets.QDialog):
     
     Signal_OpenDb=QtCore.pyqtSignal(str)
     
@@ -91,8 +92,9 @@ class Ui_NewConnDialog(QtWidgets.QDialog):
         self.pushButton_cancle.clicked.connect(Dialog.reject)
         self.pushButton_save.clicked.connect(self.save)
         self.pushButton_test.clicked.connect(self.testConnect)
-        self.pushButton_open.clicked.connect(self.open)
+        self.pushButton_open.clicked.connect(self.openDb)
         self.listWidget_conn.itemClicked.connect(self.editConn)
+        self.listWidget_conn.itemDoubleClicked.connect(self.openDbFast)
 
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -118,13 +120,14 @@ class Ui_NewConnDialog(QtWidgets.QDialog):
         conname=self.lineEdit_conname.text()
         hostname=self.lineEdit_hostname.text()
         port=self.lineEdit_port.text()
-        if port is '':
-            port=3306
         user=self.lineEdit_user.text()
         password=self.lineEdit_password.text()
+        if hostname=='' or user=='':
+            QMessageBox.warning(self,'链接测试','主机名,用户名不能为空')  
+            return 
         db=DBManager(conname,hostname,port,user,password)
         re=db._trytoConnect()
-        QMessageBox.about(self,'链接测试',re)        
+        QMessageBox.information(self,'链接测试',re)        
     
     def editConn(self,item):
         self.cursor=item.text()
@@ -139,8 +142,6 @@ class Ui_NewConnDialog(QtWidgets.QDialog):
         conname=self.lineEdit_conname.text()
         hostname=self.lineEdit_hostname.text()
         port=self.lineEdit_port.text()
-        if port is '':
-            port=3306
         user=self.lineEdit_user.text()
         password=self.lineEdit_password.text()
         if self.cursor is '':
@@ -162,10 +163,21 @@ class Ui_NewConnDialog(QtWidgets.QDialog):
         self.conf.set_item(self.cursor,'user',user)
         self.conf.set_item(self.cursor,'password',password)
         self.conf.save() 
-        self.listWidget_conn.setCurrentItem(QtWidgets.QListWidgetItem.setText(conname))
+        #重置list widget
+        self.listWidget_conn.clear()
+        self.listWidget_conn.addItems(self.conf.cfg_list())
 
 
-    def open(self):
+    def _translate(self,context, text, disambig=None):
+        sys.stdout.encoding
+        return QtWidgets.QApplication.translate(context, text, disambig)
+
+
+    def openDbFast(self,item):
+        self.cursor=item.text()
+        self.openDb()
+        
+    def openDb(self):
         if self.cursor is '':
             QMessageBox.about(self,'提示','请选择要打开的链接')
         else:
@@ -175,7 +187,7 @@ class Ui_NewConnDialog(QtWidgets.QDialog):
 
 
 if __name__=="__main__":
-    import sys
+    
     app=QtWidgets.QApplication(sys.argv)
 
     form=Ui_NewConnDialog()

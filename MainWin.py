@@ -13,7 +13,7 @@ import pymysql
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog ,QWidget, QFrame, QCheckBox, QLineEdit, QLabel, QPushButton, QTextBrowser, QTableWidget,  QAbstractItemView, QTableWidgetItem, QMenuBar
-from NewConn import Ui_NewConnDialog
+from NewConnDialog import NewConnDialog
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):        
@@ -77,7 +77,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.action_open.setShortcut(_translate("MainWindow", "Ctrl+O"))
 
     def newConn(self):
-        self.conn=Ui_NewConnDialog()
+        self.conn=NewConnDialog()
         self.conn.Signal_OpenDb.connect(self.openDb)
         resutl=self.conn.exec_()
         # self.conn.raise_()

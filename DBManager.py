@@ -8,6 +8,8 @@ class DBManager():
             self.db = QSqlDatabase.addDatabase("QMYSQL",conname)  
         self.db.setHostName(hostname)  
         self.db.setUserName(user);
+        if port is '':
+            port=3306
         self.db.setPort(int(port));
         self.db.setPassword(password); 
         for k,w in kw.items():
@@ -27,10 +29,14 @@ class DBManager():
         if (self.db.open()):   
             re="Success"  
         else:
-            re="Failed to connect to mysql"
-        print(re)
-        return re
+            re="Failed !\n"
+            re+=QSqlDatabase.lastError(self.db).text()
+            # ldd /home/ji/.local/lib/python3.6/site-packages/PyQt5/Qt/plugins/sqldrivers/libqsqlmysql.so
+            # if error == 'QSqlDatabase: QMYSQL driver not loaded QSqlDatabase: available drivers: QSQLITE QMYSQL QMYSQL3 QPSQL QPSQL7':
+            #     sudo apt-get install libmysqlclient18
+
         self.db.close()
+        return re
 
 
 
