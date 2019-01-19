@@ -37,6 +37,9 @@ class DBManager():
 
         self.db.close()
         return re
+    
+    def showTables(self):
+        return QSqlDatabase.database()
 
 
 

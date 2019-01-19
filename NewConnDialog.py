@@ -187,6 +187,9 @@ class NewConnDialog(QtWidgets.QDialog):
         else:
             self.Signal_OpenDb.emit(self.cursor)
             self.accept()
+    
+    def closeDialog(self):
+        self.close()
         
 
 
