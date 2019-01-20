@@ -89,7 +89,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def newConn(self):
         self.conn = NewConnDialog()
-        self.conn.Signal_OpenDb.connect(self.openDb)
+        self.conn.Signal_OpenDb.connect(self.openConn)
         resutl = self.conn.exec_()
         # self.conn.raise_()
 
@@ -97,41 +97,45 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         file, ok = QtWidgets.QFileDialog.getOpenFileName(
             None, 'Save File', os.getenv('HOME'))
 
-    def openConn(self):
-        pass
 
-    def openDb(self, data):
-        conf = self.conf.cfg_get(data)
+    def openConn(self, conname):
+        conf = self.conf.cfg_get(conname)
         self.currentDB = DBManager(
             conf['conname'], conf['hostname'], conf['port'], conf['user'], conf['password'])
-        re = self.currentDB._trytoConnect()
+        re = self.currentDB.testConnect()
         if(re != 'Success'):
             self.conn.closeDialog()
             QMessageBox.information(self, '链接失败', re)
             return
         index = len(self.openDBs)
         if(index == 0):
-            self.setupTabWidget(data)
+            self.setupTabWidget()
+        self.addTab(conname)
         self.currentDBIndex = index
         self.openDBs.append(self.currentDB)
         self.tabWidget.setCurrentIndex(index)
-        self.setupListWidget(index)
-        print(self.currentDB.showTables())
+        dbList=self.currentDB.showDBs()        
+        self.setupDbTree(index,dbList)
 
-    def setupTabWidget(self, tabName):
+    def setupTabWidget(self):
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setGeometry(QtCore.QRect(0, 0, 800, 550))
-        self.tabWidget.setObjectName("tabWidget")
+        self.tabWidget.setObjectName("tabWidget")        
+        self.tabWidget.show()
+    
+    def addTab(self,tabName):
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab_"+tabName)
         self.tabWidget.addTab(self.tab, tabName)
-        self.tabWidget.show()
 
-    def setupListWidget(self, tabIndex):
-        self.listWidget = QtWidgets.QListWidget(self.tab)
-        self.listWidget.setGeometry(QtCore.QRect(-1, 0, 181, 521))
-        self.listWidget.setObjectName("listWidget_"+str(tabIndex))
-        self.listWidget.show()
+    def setupDbTree(self, tabIndex,dbList):
+        self.treeWidget = QtWidgets.QTreeWidget(self.tab)
+        self.treeWidget.setGeometry(QtCore.QRect(-1, 0, 181, 521))
+        self.treeWidget.setObjectName("treeWidget_"+str(tabIndex))
+        self.treeWidget.headerItem().setText(0,'Tables')
+        L=[self.treeWidget.topLevelItem(dbList.index(x)).setText(0, x) for x in dbList]
+        # self.treeWidget.addTopLevelItems(dbList)
+        self.treeWidget.show()
 
 
 if __name__ == "__main__":

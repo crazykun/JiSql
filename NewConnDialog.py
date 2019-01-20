@@ -125,9 +125,7 @@ class NewConnDialog(QtWidgets.QDialog):
         if hostname=='' or user=='':
             QMessageBox.warning(self,'链接测试','主机名,用户名不能为空')  
             return 
-        db=DBManager(conname,hostname,port,user,password)
-        re=db._trytoConnect()
-        QMessageBox.information(self,'链接测试',re)        
+        QMessageBox.information(self,'链接测试',DBManager(conname,hostname,port,user,password).testConnect())        
     
     def editConn(self,item):
         self.cursor=item.text()
@@ -172,11 +170,7 @@ class NewConnDialog(QtWidgets.QDialog):
         self.listWidget_conn.addItems(self.conf.cfg_list())
 
 
-    def _translate(self,context, text, disambig=None):
-        sys.stdout.encoding
-        return QtWidgets.QApplication.translate(context, text, disambig)
-
-
+    #双击直接打开数据库
     def openDbFast(self,item):
         self.cursor=item.text()
         self.openDb()
