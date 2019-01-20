@@ -34,6 +34,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.currentTable = ''  # 当前打开的表
         self.openTables = []  # 所有打开的表
         self.currentLine = ''  # 当前行
+        self.treeWidget=[]
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -129,13 +130,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.tabWidget.addTab(self.tab, tabName)
 
     def setupDbTree(self, tabIndex,dbList):
-        self.treeWidget = QtWidgets.QTreeWidget(self.tab)
-        self.treeWidget.setGeometry(QtCore.QRect(-1, 0, 181, 521))
-        self.treeWidget.setObjectName("treeWidget_"+str(tabIndex))
-        self.treeWidget.headerItem().setText(0,'Tables')
-        L=[self.treeWidget.topLevelItem(dbList.index(x)).setText(0, x) for x in dbList]
-        # self.treeWidget.addTopLevelItems(dbList)
-        self.treeWidget.show()
+        self.treeWidget.append("treeWidget_"+str(tabIndex))
+        thisItem=self.treeWidget.index("treeWidget_"+str(tabIndex))
+        thisItem = QtWidgets.QTreeWidget(self.tab)
+        thisItem.setGeometry(QtCore.QRect(-1, 0, 181, 521))
+        thisItem.setObjectName("treeWidget_"+str(tabIndex))
+        thisItem.setHeaderHidden(True)
+        item=[]
+        for x in dbList:            
+            i=QtWidgets.QTreeWidgetItem(thisItem)
+            i.setText(0,x)
+            item.append(i)
+        thisItem.addTopLevelItems(item)
+        thisItem.show()
+        # thisItem.doubleClicked['QModelIndex'].connect(self.openItems())
+    
+    def openItems(self):
+        print(11)
 
 
 if __name__ == "__main__":
