@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>520</width>
+    <height>284</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>打开链接</string>
+  </property>
+  <widget class="QPushButton" name="pushButton_test">
+   <property name="geometry">
+    <rect>
+     <x>238</x>
+     <y>220</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>连接测试</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_save">
+   <property name="geometry">
+    <rect>
+     <x>324</x>
+     <y>220</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>保存</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_cancle">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>220</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>取消</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_open">
+   <property name="geometry">
+    <rect>
+     <x>117</x>
+     <y>219</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>打开</string>
+   </property>
+  </widget>
+  <widget class="QSplitter" name="splitter">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>451</width>
+     <height>194</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <widget class="QWidget" name="layoutWidget">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="2">
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_conname">
+         <property name="text">
+          <string>链接名:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineEdit_conname">
+         <property name="placeholderText">
+          <string>本地链接</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_hostname">
+         <property name="text">
+          <string>主机名或者IP:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="lineEdit_hostname">
+         <property name="placeholderText">
+          <string>127.0.0.1</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_port">
+         <property name="text">
+          <string>端口:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="lineEdit_port">
+         <property name="placeholderText">
+          <string>3306</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_username">
+         <property name="text">
+          <string>用户名:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="lineEdit_user">
+         <property name="placeholderText">
+          <string>root</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_password">
+         <property name="text">
+          <string>密码:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="lineEdit_password">
+         <property name="placeholderText">
+          <string>root</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="0">
+      <widget class="QListWidget" name="listWidget_conn">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_cancle</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>312</x>
+     <y>253</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>314</x>
+     <y>283</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_save</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>242</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>240</x>
+     <y>283</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listWidget_conn</sender>
+   <signal>clicked(QModelIndex)</signal>
+   <receiver>Dialog</receiver>
+   <slot>editConn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>148</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>57</x>
+     <y>224</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>editConn()</slot>
+ </slots>
+</ui>

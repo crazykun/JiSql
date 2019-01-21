@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Mysql管理工具</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Tab 1</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QTreeWidget" name="treeWidget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QTextEdit" name="textEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>60</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>60</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>执行</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTabWidget" name="tabWidget_2">
+              <widget class="QWidget" name="tab_3">
+               <attribute name="title">
+                <string>Tab 1</string>
+               </attribute>
+              </widget>
+              <widget class="QWidget" name="tab_4">
+               <attribute name="title">
+                <string>Tab 2</string>
+               </attribute>
+              </widget>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QToolButton" name="toolButton_2">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButton_3">
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Tab 2</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_F">
+    <property name="title">
+     <string>文件(&amp;F)</string>
+    </property>
+    <addaction name="action_new"/>
+    <addaction name="action_open"/>
+    <addaction name="action_import"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>帮助(H)</string>
+    </property>
+    <addaction name="action"/>
+    <addaction name="action_QT"/>
+   </widget>
+   <addaction name="menu_F"/>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="action_new">
+   <property name="text">
+    <string>新建(&amp;N)</string>
+   </property>
+  </action>
+  <action name="action_open">
+   <property name="text">
+    <string>打开(&amp;O)</string>
+   </property>
+  </action>
+  <action name="action_import">
+   <property name="text">
+    <string>导入(&amp;I)</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>关于我们</string>
+   </property>
+  </action>
+  <action name="action_QT">
+   <property name="text">
+    <string>关于QT</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

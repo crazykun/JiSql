@@ -76,7 +76,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "新建Mysql连接"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Mysql数据库管理工具"))
         self.menu.setTitle(_translate("MainWindow", "文件(&F)"))
 
         self.action_new.setText(_translate("MainWindow", "新建"))
@@ -121,7 +121,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def setupTabWidget(self):
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setGeometry(QtCore.QRect(0, 0, 800, 550))
-        self.tabWidget.setObjectName("tabWidget")        
+        self.tabWidget.setObjectName("tabWidget")  
+        self.tabWidget.setTabsClosable(True)  
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
         self.tabWidget.show()
     
     def addTab(self,tabName):
@@ -142,6 +147,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             i.setText(0,x)
             item.append(i)
         thisItem.addTopLevelItems(item)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(thisItem.sizePolicy().hasHeightForWidth())
         thisItem.show()
         # thisItem.doubleClicked['QModelIndex'].connect(self.openItems())
     
