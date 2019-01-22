@@ -29,7 +29,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.currentTable = ''  # 当前打开的表
         self.openTables = []  # 所有打开的表
         self.currentLine = ''  # 当前行
-        self.treeWidget=[]
+        self.treeWidgets=[]
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -47,8 +47,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
         self.centralwidget.setSizePolicy(sizePolicy)
         self.centralwidget.setObjectName("centralwidget")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.centralwidget)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+
 
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 24))
@@ -78,7 +79,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menu.addAction(self.action_open)
         self.action_open.triggered.connect(self.openConn)
 
+        #help
+        self.menu_help = QtWidgets.QMenu(self.menubar)
+        self.action_help = QtWidgets.QAction(MainWindow)
+        self.action_help.setObjectName("action_help")
+        self.action_help.triggered.connect(self.aboutUs)
+        self.menu_help.addAction(self.action_help)
+
+        self.action_QT = QtWidgets.QAction(MainWindow)
+        self.action_QT.setObjectName("action_QT")
+        self.menu_help.addAction(self.action_QT)
+        self.action_QT.triggered.connect(self.aboutQT)
+
         self.menubar.addAction(self.menu.menuAction())
+        self.menubar.addAction(self.menu_help.menuAction())
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -86,6 +101,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Mysql数据库管理工具"))
         self.menu.setTitle(_translate("MainWindow", "文件(&F)"))
+        self.menu_help.setTitle(_translate("MainWindow", "帮助(H)"))
 
         self.action_new.setText(_translate("MainWindow", "新建"))
         self.action_new.setShortcut(_translate("MainWindow", "Ctrl+N"))
@@ -96,15 +112,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.action_open.setText(_translate("MainWindow", "打开(&O)"))
         self.action_open.setShortcut(_translate("MainWindow", "Ctrl+O"))
 
+        self.action_help.setText(_translate("MainWindow", "关于我们"))
+        self.action_QT.setText(_translate("MainWindow", "关于QT"))
+
+
+
     def newConn(self):
         self.conn = NewConnDialog()
         self.conn.Signal_OpenDb.connect(self.openConn)
-        resutl = self.conn.exec_()
+        self.conn.exec_()
         # self.conn.raise_()
 
     def importConn(self):
-        file, ok = QtWidgets.QFileDialog.getOpenFileName(
-            None, 'Save File', os.getenv('HOME'))
+        file, ok = QtWidgets.QFileDialog.getOpenFileName(None, 'Save File', os.getenv('HOME'))
 
 
     def openConn(self, conname):
@@ -117,25 +137,73 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             QMessageBox.information(self, '链接失败', re)
             return
         index = len(self.openDBs)
-        if(index == 0):
-            self.setupTabWidget()
-        self.addTab(conname)
         self.currentDBIndex = index
         self.openDBs.append(self.currentDB)
-        self.tabWidget.setCurrentIndex(index)
-        dbList=self.currentDB.showDBs()        
-        self.setupDbTree(index,dbList)
+        dbList=self.currentDB.showDBs()  
 
-    def setupTabWidget(self):
+        if(index == 0):
+            self.setupBaseUi(self,dbList)
+        else:
+            self.addTab(conname)
+            self.setupDbTree(index,dbList)
+        self.tabWidget.setTabText(index,conname)
+        self.tabWidget.setCurrentIndex(index)
+       
+
+    def setupBaseUi(self,MainWindow,dbList):
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName("tabWidget")
         self.tab = QtWidgets.QWidget()
-        self.tab.setObjectName("tab")
+        self.tab.setObjectName("tab")        
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.tab)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.tabWidget.show()
+        #添加tree
+        self.setupDbTree(0,dbList)
+        
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.textEdit = QtWidgets.QTextEdit(self.tab)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.textEdit.sizePolicy().hasHeightForWidth())
+        self.textEdit.setSizePolicy(sizePolicy)
+        self.textEdit.setMinimumSize(QtCore.QSize(0, 60))
+        self.textEdit.setObjectName("textEdit")
+        self.horizontalLayout_2.addWidget(self.textEdit)
+        self.pushButton = QtWidgets.QPushButton(self.tab)
+        self.pushButton.setText("执行")
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
+        self.pushButton.setSizePolicy(sizePolicy)
+        self.pushButton.setMinimumSize(QtCore.QSize(60, 60))
+        self.pushButton.setObjectName("pushButton")
+        self.horizontalLayout_2.addWidget(self.pushButton)
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
+        self.tabWidget_2 = QtWidgets.QTabWidget(self.tab)
+        self.tabWidget_2.setObjectName("tabWidget_2")
+        self.verticalLayout.addWidget(self.tabWidget_2)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout.setStretch(1, 1)
+
+        self.horizontalLayout_4.addLayout(self.verticalLayout)
+        self.horizontalLayout_5.addLayout(self.horizontalLayout_4)
+        self.tabWidget.addTab(self.tab, "")
+        self.verticalLayout_2.addWidget(self.tabWidget)
+        MainWindow.setCentralWidget(self.centralwidget)
+
+
     
     def addTab(self,tabName):
         self.tab = QtWidgets.QWidget()
@@ -143,27 +211,49 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.tabWidget.addTab(self.tab, tabName)
 
     def setupDbTree(self, tabIndex,dbList):
-        self.treeWidget.append("treeWidget_"+str(tabIndex))
-        thisItem=self.treeWidget.index("treeWidget_"+str(tabIndex))
+        self.treeWidgets.append("treeWidget_"+str(tabIndex))
         thisItem = QtWidgets.QTreeWidget(self.tab)
-        thisItem.setGeometry(QtCore.QRect(-1, 0, 181, 521))
-        thisItem.setObjectName("treeWidget_"+str(tabIndex))
-        thisItem.setHeaderHidden(True)
-        item=[]
-        for x in dbList:            
-            i=QtWidgets.QTreeWidgetItem(thisItem)
-            i.setText(0,x)
-            item.append(i)
-        thisItem.addTopLevelItems(item)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(thisItem.sizePolicy().hasHeightForWidth())
-        thisItem.show()
-        # thisItem.doubleClicked['QModelIndex'].connect(self.openItems())
-    
-    def openItems(self):
-        print(11)
+        thisItem.setSizePolicy(sizePolicy)
+        thisItem.setMinimumSize(QtCore.QSize(200, 0))
+        thisItem.setObjectName("treeWidget_"+str(tabIndex))
+        thisItem.setHeaderHidden(True)
+        self.horizontalLayout_4.addWidget(thisItem)
+
+        items=[]
+        for x in dbList:            
+            i=QtWidgets.QTreeWidgetItem(thisItem)
+            i.setText(0,x)
+            items.append(i)
+        thisItem.addTopLevelItems(items)
+
+        thisItem.itemDoubleClicked['QTreeWidgetItem*','int'].connect(self.clickTreeItem)
+        # thisItem.show()
+        self.setCentralWidget(thisItem)
+        
+    def clickTreeItem(self,item,column):
+        if(item.parent() is  None):
+            database=item.text(column)
+            tables=self.currentDB.showTables(database)
+            items=[]
+            for x in tables:            
+                i=QtWidgets.QTreeWidgetItem(item)
+                i.setText(0,x)
+                items.append(i)
+            item.addChildren(items)
+        else:
+            table=item.text(column)
+            columns=self.currentDB.showColumns(table)
+            print(columns)
+
+    def aboutQT(self):
+        QMessageBox.aboutQt(self,'关于QT')
+
+    def aboutUs(self):
+        QMessageBox.about(self,'关于JiSql','使用Pyqt5编写的跨平台mysql工具')
 
 
 if __name__ == "__main__":

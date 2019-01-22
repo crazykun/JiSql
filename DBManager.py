@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import pymysql
 from PyQt5.QtSql import QSqlQuery,QSqlDatabase
 
 
@@ -56,6 +55,26 @@ class DBManager():
                 databases_list.append(self.query.value(0))
         return databases_list
 
+    def showTables(self,database):
+        tables_list=[]
+        self.openDB()
+        self.query.exec("use "+database)   
+        re=self.query.exec("show tables")   
+        if(re):
+            while(self.query.next()):
+                tables_list.append(self.query.value(0))
+        return tables_list
+
+    def showColumns(self,table):
+        columns=[]
+        self.openDB()
+        re=self.query.exec("select COLUMN_NAME from information_schema.COLUMNS where table_name = '%s';" % (table))   
+        if(re):
+            while(self.query.next()):
+                columns.append(self.query.value(0))
+        return columns
+
+
 
 
     def execSql(self,sql):
@@ -64,8 +83,8 @@ class DBManager():
 
 
 if __name__ == "__main__":
-    db=DBManager();
-    db.testConnect()
-    re=db.showTables()
+    my_db=DBManager();
+    my_db.testConnect()
+    re=my_db.showTables()
     print(re)
     
