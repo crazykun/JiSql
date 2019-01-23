@@ -67,6 +67,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
         self.pushButton.setSizePolicy(sizePolicy)
         self.pushButton.setMinimumSize(QtCore.QSize(60, 60))
+        self.pushButton.setStyleSheet("background:qlineargradient(spread:reflect, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255))")
         self.pushButton.setObjectName("pushButton")
         self.horizontalLayout_2.addWidget(self.pushButton)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
