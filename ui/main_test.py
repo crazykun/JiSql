@@ -8,19 +8,19 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from main import Ui_MainWindow 
+import sys
+
 
 class main_test(Ui_MainWindow):
     def __init__(self, parent=None):
-        super(main_test, self).__init__()
-        parent.setupUi(self)
-        parent.retranslateUi(self)
-
-
-
+        # super(main_test, self).__init__()
+        Ui_MainWindow.__init__(self)
+        self.setupUi(self)
+        self.retranslateUi(self)
 
 
 if __name__ == "__main__":
-    import sys
+
     app = QtWidgets.QApplication(sys.argv)
     ui = main_test()
     ui.show()
