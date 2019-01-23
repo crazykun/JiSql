@@ -153,15 +153,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def setupBaseUi(self,MainWindow,dbList):
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName("tabWidget")
+
+        #大tab页
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")        
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.tab)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+
         #添加tree
         self.setupDbTree(0,dbList)
         
+        #右侧
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
@@ -247,7 +251,30 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         else:
             table=item.text(column)
             columns=self.currentDB.showColumns(table)
-            print(columns)
+            dataModel=self.currentDB.getList(table,columns)
+            self.setupTableData(table,dataModel)
+    
+    def setupTableData(self,table,dataModel):
+        if table in self.openTables:
+            print(self.openTables.index(table))
+            self.tabWidget_2.setCurrentIndex(self.openTables.index(table))
+        else:
+            this = self.__dict__
+            num=len(self.openTables) 
+            tab_tmp = QtWidgets.QWidget()
+            tab_tmp.setObjectName("tab_tmp")
+            self.horizontalLayout_3 = QtWidgets.QHBoxLayout(tab_tmp)
+            self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+            self.tableView = QtWidgets.QTableView(tab_tmp)
+            self.tableView.setObjectName("tableView")
+            self.tableView.setModel(dataModel)
+            self.horizontalLayout_3.addWidget(self.tableView)
+            self.tabWidget_2.addTab(tab_tmp, "")
+            self.tabWidget_2.setTabText(num,table)
+            this['tab_'+str(num)]=tab_tmp
+            self.openTables.append(table)
+            self.tabWidget_2.setCurrentIndex(num)
+
 
     def aboutQT(self):
         QMessageBox.aboutQt(self,'关于QT')

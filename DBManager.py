@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from PyQt5.QtSql import QSqlQuery,QSqlDatabase
+from PyQt5.QtSql import QSqlQuery,QSqlDatabase,QSqlQueryModel
+from PyQt5.QtCore import Qt
 
 
 class DBManager():
@@ -74,7 +75,15 @@ class DBManager():
                 columns.append(self.query.value(0))
         return columns
 
-
+    def getList(self,table,header):
+        model=QSqlQueryModel()
+        # model.setTable(table)
+        model.setQuery('select * from %s limit 100' % (table),self.db)
+        i=0
+        for h in header:
+            model.setHeaderData(i,Qt.Horizontal,h)
+            i+=1
+        return model
 
 
     def execSql(self,sql):
@@ -85,6 +94,6 @@ class DBManager():
 if __name__ == "__main__":
     my_db=DBManager();
     my_db.testConnect()
-    re=my_db.showTables()
+    re=my_db.showTables('test')
     print(re)
     
