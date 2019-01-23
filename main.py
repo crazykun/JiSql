@@ -39,7 +39,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
-        MainWindow.setMinimumSize(QtCore.QSize(800, 600))
+        MainWindow.setMinimumSize(QtCore.QSize(1000, 800))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -52,7 +52,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.pushButton_open = QtWidgets.QPushButton(MainWindow)
         self.pushButton_open.setText("打开")
-        self.pushButton_open.setGeometry(QtCore.QRect(360, 250, 80, 27))
+        self.pushButton_open.setGeometry(QtCore.QRect(460, 350, 80, 27))
         self.pushButton_open.clicked.connect(self.newConn)
 
 
