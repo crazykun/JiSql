@@ -50,6 +50,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
 
+        self.pushButton_open = QtWidgets.QPushButton(MainWindow)
+        self.pushButton_open.setText("打开")
+        self.pushButton_open.setGeometry(QtCore.QRect(360, 250, 80, 27))
+        self.pushButton_open.clicked.connect(self.newConn)
+
 
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 24))
@@ -151,6 +156,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
        
 
     def setupBaseUi(self,MainWindow,dbList):
+        self.pushButton_open.hide()
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName("tabWidget")
 
@@ -203,8 +209,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.horizontalLayout_4.addLayout(self.verticalLayout)
         self.horizontalLayout_5.addLayout(self.horizontalLayout_4)
+        self.tabWidget.setTabsClosable(True)
         self.tabWidget.addTab(self.tab, "")
         self.verticalLayout_2.addWidget(self.tabWidget)
+
+        self.tabWidget.tabCloseRequested['int'].connect(self.closeDbTab)
+        self.tabWidget_2.tabCloseRequested['int'].connect(self.closeTablesTab)
+
         MainWindow.setCentralWidget(self.centralwidget)
 
 
@@ -212,7 +223,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def addTab(self,tabName):
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab_"+tabName)
+        self.tabWidget.setTabsClosable(True)
         self.tabWidget.addTab(self.tab, tabName)
+
+    def closeDbTab(self,index):
+        self.tabWidget.removeTab(index)
 
     def setupDbTree(self, tabIndex,dbList):
         self.treeWidgets.append("treeWidget_"+str(tabIndex))
@@ -269,12 +284,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.tableView.setObjectName("tableView")
             self.tableView.setModel(dataModel)
             self.horizontalLayout_3.addWidget(self.tableView)
+            self.tabWidget_2.setTabsClosable(True)
             self.tabWidget_2.addTab(tab_tmp, "")
             self.tabWidget_2.setTabText(num,table)
             this['tab_'+str(num)]=tab_tmp
             self.openTables.append(table)
             self.tabWidget_2.setCurrentIndex(num)
 
+    def closeTablesTab(self,index):
+        table=self.tabWidget_2.tabText(index)
+        self.openTables.remove(table)
+        self.tabWidget_2.removeTab(index)
 
     def aboutQT(self):
         QMessageBox.aboutQt(self,'关于QT')
