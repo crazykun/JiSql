@@ -16,11 +16,14 @@ class NewConnDialog(QtWidgets.QDialog):
     
     Signal_OpenDb=QtCore.pyqtSignal(str)
     
-    def __init__(self,parent=None):
-        QtWidgets.QDialog.__init__(self,parent)
+    def __init__(self,conf=None):
+        QtWidgets.QDialog.__init__(self)
         self.setupUi(self)    
         self.cursor='';
-        self.conf = Config()
+        if conf is not None:
+            self.conf=conf
+        else:
+            self.conf = Config()
         self.listWidget_conn.addItems(self.conf.cfg_list())
 
 
@@ -125,7 +128,12 @@ class NewConnDialog(QtWidgets.QDialog):
         if hostname=='' or user=='':
             QMessageBox.warning(self,'链接测试','主机名,用户名不能为空')  
             return 
-        QMessageBox.information(self,'链接测试',DBManager(conname,hostname,port,user,password).testConnect())        
+        try:
+            newDB=DBManager(conname,hostname,port,user,password)
+        except:
+            QMessageBox.warning(self,'链接测试','配置参数有误!')  
+        else:
+            QMessageBox.information(self,'链接测试',newDB.testConnect())        
     
     def editConn(self,item):
         self.cursor=item.text()

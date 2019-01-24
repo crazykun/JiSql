@@ -123,10 +123,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def newConn(self):
-        self.conn = NewConnDialog()
+        self.conn = NewConnDialog(self.conf)
         self.conn.Signal_OpenDb.connect(self.openConn)
         self.conn.exec_()
-        # self.conn.raise_()
+        self.conn.raise_()
 
     def importConn(self):
         file, ok = QtWidgets.QFileDialog.getOpenFileName(None, 'Save File', os.getenv('HOME'))
@@ -134,8 +134,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def openConn(self, conname):
         conf = self.conf.cfg_get(conname)
-        self.currentDB = DBManager(
-            conf['conname'], conf['hostname'], conf['port'], conf['user'], conf['password'])
+        try:
+            self.currentDB = DBManager(conf['conname'], conf['hostname'], conf['port'], conf['user'], conf['password'])
+        except:
+            self.conn.closeDialog()
+            QMessageBox.warning(self, '提醒','配置参数有误')
+            return
         re = self.currentDB.testConnect()
         if(re != 'Success'):
             self.conn.closeDialog()

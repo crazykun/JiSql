@@ -46,10 +46,14 @@ class Config(object):
         self.cfg.set(se,key,value)                             
  
     def save(self):
-        fd = open(self.file,'w')
         #在内存中修改的内容写回文件中，相当于保存
-        self.cfg.write(fd)                                     
-        fd.close()
+        try:
+            self.cfg.write(open(self.file,'w'))
+        except:
+            print('write conf error')
+        # fd = open(self.file,'w')
+        # self.cfg.write(fd)                                     
+        # fd.close()
     
  
 if __name__== '__main__':
