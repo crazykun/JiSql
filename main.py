@@ -50,11 +50,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
 
+        self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget.setObjectName("tabWidget")
+        self.tabWidget.setTabsClosable(True)
+        self.verticalLayout_2.addWidget(self.tabWidget)
+
         self.pushButton_open = QtWidgets.QPushButton(MainWindow)
         self.pushButton_open.setText("打开")
         self.pushButton_open.setGeometry(QtCore.QRect(460, 350, 80, 27))
         self.pushButton_open.clicked.connect(self.newConn)
-
 
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 24))
@@ -153,16 +157,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if(index == 0):
             self.setupBaseUi(self,dbList)
         else:
-            self.addTab(conname)
+            self.addTablesTab(conname)
             self.setupDbTree(index,dbList)
         self.tabWidget.setTabText(index,conname)
         self.tabWidget.setCurrentIndex(index)
        
 
     def setupBaseUi(self,MainWindow,dbList):
-        self.pushButton_open.hide()
-        self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-        self.tabWidget.setObjectName("tabWidget")
+        self.pushButton_open.hide()       
 
         #大tab页
         self.tab = QtWidgets.QWidget()
@@ -214,9 +216,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.horizontalLayout_4.addLayout(self.verticalLayout)
         self.horizontalLayout_5.addLayout(self.horizontalLayout_4)
-        self.tabWidget.setTabsClosable(True)
-        self.tabWidget.addTab(self.tab, "")
-        self.verticalLayout_2.addWidget(self.tabWidget)
+        
+        self.tabWidget.addTab(self.tab, "")        
 
         self.tabWidget.tabCloseRequested['int'].connect(self.closeDbTab)
         self.tabWidget_2.tabCloseRequested['int'].connect(self.closeTablesTab)
@@ -225,12 +226,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     
-    def addTab(self,tabName):
-        self.tab = QtWidgets.QWidget()
-        self.tab.setObjectName("tab_"+tabName)
-        self.tabWidget.setTabsClosable(True)
-        self.tabWidget.addTab(self.tab, tabName)
-
     def closeDbTab(self,index):
         self.tabWidget.removeTab(index)
 
@@ -258,8 +253,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # thisItem.show()
         self.setCentralWidget(thisItem)
         
+
+    #点击左侧树
     def clickTreeItem(self,item,column):
         if(item.parent() is  None):
+            #database 展开表
             database=item.text(column)
             tables=self.currentDB.showTables(database)
             items=[]
@@ -269,11 +267,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 items.append(i)
             item.addChildren(items)
         else:
+            #打开表
             table=item.text(column)
             columns=self.currentDB.showColumns(table)
             dataModel=self.currentDB.getList(table,columns)
             self.setupTableData(table,dataModel)
     
+    #初始化表数据
     def setupTableData(self,table,dataModel):
         if table in self.openTables:
             print(self.openTables.index(table))
@@ -312,6 +312,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.toolButton_page_end.setObjectName("toolButton_page_end")
             self.horizontalLayout.addWidget(self.toolButton_page_end)
 
+    #添加表
+    def addTablesTab(self,tabName):
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab_"+tabName)
+        self.tabWidget.setTabsClosable(True)
+        self.tabWidget.addTab(self.tab, tabName)
+
+    #关闭表
     def closeTablesTab(self,index):
         table=self.tabWidget_2.tabText(index)
         self.openTables.remove(table)
