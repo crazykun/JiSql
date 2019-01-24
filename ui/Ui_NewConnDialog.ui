@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>ConnDialog</class>
+ <widget class="QDialog" name="ConnDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="pushButton_test">
    <property name="geometry">
     <rect>
-     <x>238</x>
+     <x>250</x>
      <y>220</y>
      <width>80</width>
      <height>27</height>
@@ -29,7 +29,7 @@
   <widget class="QPushButton" name="pushButton_save">
    <property name="geometry">
     <rect>
-     <x>324</x>
+     <x>340</x>
      <y>220</y>
      <width>80</width>
      <height>27</height>
@@ -42,7 +42,7 @@
   <widget class="QPushButton" name="pushButton_cancle">
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>430</x>
      <y>220</y>
      <width>80</width>
      <height>27</height>
@@ -55,8 +55,8 @@
   <widget class="QPushButton" name="pushButton_open">
    <property name="geometry">
     <rect>
-     <x>117</x>
-     <y>219</y>
+     <x>30</x>
+     <y>220</y>
      <width>80</width>
      <height>27</height>
     </rect>
@@ -176,18 +176,31 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QPushButton" name="pushButton_new">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>220</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>新建</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>
   <connection>
    <sender>pushButton_cancle</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>ConnDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>312</x>
-     <y>253</y>
+     <x>430</x>
+     <y>246</y>
     </hint>
     <hint type="destinationlabel">
      <x>314</x>
@@ -196,39 +209,108 @@
    </hints>
   </connection>
   <connection>
-   <sender>pushButton_save</sender>
-   <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
-   <slot>accept()</slot>
+   <sender>listWidget_conn</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>ConnDialog</receiver>
+   <slot>editConn()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>242</x>
-     <y>254</y>
+     <x>78</x>
+     <y>75</y>
     </hint>
     <hint type="destinationlabel">
-     <x>240</x>
-     <y>283</y>
+     <x>62</x>
+     <y>260</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>listWidget_conn</sender>
-   <signal>clicked(QModelIndex)</signal>
-   <receiver>Dialog</receiver>
-   <slot>editConn()</slot>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>ConnDialog</receiver>
+   <slot>openDbFast()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>148</x>
-     <y>139</y>
+     <x>111</x>
+     <y>133</y>
     </hint>
     <hint type="destinationlabel">
+     <x>128</x>
+     <y>264</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_new</sender>
+   <signal>clicked()</signal>
+   <receiver>ConnDialog</receiver>
+   <slot>newConn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>193</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>259</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_open</sender>
+   <signal>clicked()</signal>
+   <receiver>ConnDialog</receiver>
+   <slot>openDb()</slot>
+   <hints>
+    <hint type="sourcelabel">
      <x>57</x>
+     <y>229</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>38</x>
+     <y>225</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_save</sender>
+   <signal>clicked()</signal>
+   <receiver>ConnDialog</receiver>
+   <slot>saveConn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>385</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_test</sender>
+   <signal>clicked()</signal>
+   <receiver>ConnDialog</receiver>
+   <slot>testConnect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
      <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>279</x>
+     <y>204</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
   <slot>editConn()</slot>
+  <slot>openDbFast()</slot>
+  <slot>newConn()</slot>
+  <slot>openDb()</slot>
+  <slot>saveConn()</slot>
+  <slot>testConnect()</slot>
  </slots>
 </ui>

@@ -4,18 +4,18 @@ import os.path
 
 ### ui 文件转 py文件   
 
-#列出所有路径下的ui文件
-dir= './'
-
 #列出目录下所有的ui文件
-def listUiFile():
+def listUiFile(dir='./'):
     list=[]
-    files=os.listdir(dir)
-    for filename in files:
-        #print(dir + os.sep +f)
-        #print(filename)
-        if os.path.splitext(filename)[1]=='.ui':
-            list.append(filename)
+    files=os.listdir(dir) 
+    for i in range(0,len(files)):
+        path = os.path.join(dir,files[i])
+        if os.path.isdir(path):
+           list.extend(listUiFile(path))
+        if os.path.isfile(path):
+            if os.path.splitext(files[i])[1]=='.ui':
+                print(path)
+                list.append(path)
     return list
 
 #把扩展名为ui的文件改成.py文件
@@ -29,7 +29,6 @@ def runMain():
     for uifile in list:
         pyfile=transPyFile(uifile)
         cmd='pyuic5 -o {pyfile} {uifile}'.format(pyfile=pyfile,uifile=uifile)
-        #print(cmd)
         os.system(cmd)
 
 #入口

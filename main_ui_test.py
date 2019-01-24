@@ -6,14 +6,14 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from Ui_MainWindow import Ui_MainWindow 
 import sys
+from PyQt5 import QtCore, QtGui, QtWidgets
+from ui.Ui_MainWindow import Ui_MainWindow
 
 
-class main_test(QtWidgets.QMainWindow,Ui_MainWindow):
+class main_ui_test(QtWidgets.QMainWindow,Ui_MainWindow):
     def __init__(self, parent=None):
-        super(main_test, self).__init__()
+        super(main_ui_test, self).__init__()
         self.setupUi(self)
         self.retranslateUi(self)
         # self.show()
@@ -22,7 +22,7 @@ class main_test(QtWidgets.QMainWindow,Ui_MainWindow):
 if __name__ == "__main__":
 
     app = QtWidgets.QApplication(sys.argv)
-    ui = main_test()
+    ui = main_ui_test()
     ui.show()
 
     sys.exit(app.exec_())

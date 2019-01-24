@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'NewConnDialog.ui'
+# Form implementation generated from reading ui file './ui/Ui_NewConnDialog.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.3
 #
@@ -8,23 +8,23 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(520, 284)
-        self.pushButton_test = QtWidgets.QPushButton(Dialog)
-        self.pushButton_test.setGeometry(QtCore.QRect(238, 220, 80, 27))
+class Ui_ConnDialog(object):
+    def setupUi(self, ConnDialog):
+        ConnDialog.setObjectName("ConnDialog")
+        ConnDialog.resize(520, 284)
+        self.pushButton_test = QtWidgets.QPushButton(ConnDialog)
+        self.pushButton_test.setGeometry(QtCore.QRect(250, 220, 80, 27))
         self.pushButton_test.setObjectName("pushButton_test")
-        self.pushButton_save = QtWidgets.QPushButton(Dialog)
-        self.pushButton_save.setGeometry(QtCore.QRect(324, 220, 80, 27))
+        self.pushButton_save = QtWidgets.QPushButton(ConnDialog)
+        self.pushButton_save.setGeometry(QtCore.QRect(340, 220, 80, 27))
         self.pushButton_save.setObjectName("pushButton_save")
-        self.pushButton_cancle = QtWidgets.QPushButton(Dialog)
-        self.pushButton_cancle.setGeometry(QtCore.QRect(410, 220, 80, 27))
+        self.pushButton_cancle = QtWidgets.QPushButton(ConnDialog)
+        self.pushButton_cancle.setGeometry(QtCore.QRect(430, 220, 80, 27))
         self.pushButton_cancle.setObjectName("pushButton_cancle")
-        self.pushButton_open = QtWidgets.QPushButton(Dialog)
-        self.pushButton_open.setGeometry(QtCore.QRect(117, 219, 80, 27))
+        self.pushButton_open = QtWidgets.QPushButton(ConnDialog)
+        self.pushButton_open.setGeometry(QtCore.QRect(30, 220, 80, 27))
         self.pushButton_open.setObjectName("pushButton_open")
-        self.splitter = QtWidgets.QSplitter(Dialog)
+        self.splitter = QtWidgets.QSplitter(ConnDialog)
         self.splitter.setGeometry(QtCore.QRect(10, 10, 451, 194))
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
@@ -72,28 +72,36 @@ class Ui_Dialog(object):
         self.gridLayout.addWidget(self.listWidget_conn, 0, 0, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 0, 1, 1, 1)
+        self.pushButton_new = QtWidgets.QPushButton(ConnDialog)
+        self.pushButton_new.setGeometry(QtCore.QRect(120, 220, 80, 27))
+        self.pushButton_new.setObjectName("pushButton_new")
 
-        self.retranslateUi(Dialog)
-        self.pushButton_cancle.clicked.connect(Dialog.reject)
-        self.pushButton_save.clicked.connect(Dialog.accept)
-        self.listWidget_conn.clicked['QModelIndex'].connect(Dialog.editConn)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(ConnDialog)
+        self.pushButton_cancle.clicked.connect(ConnDialog.reject)
+        self.listWidget_conn.itemClicked['QListWidgetItem*'].connect(ConnDialog.editConn)
+        self.listWidget_conn.itemDoubleClicked['QListWidgetItem*'].connect(ConnDialog.openDbFast)
+        self.pushButton_new.clicked.connect(ConnDialog.newConn)
+        self.pushButton_open.clicked.connect(ConnDialog.openDb)
+        self.pushButton_save.clicked.connect(ConnDialog.saveConn)
+        self.pushButton_test.clicked.connect(ConnDialog.testConnect)
+        QtCore.QMetaObject.connectSlotsByName(ConnDialog)
 
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, ConnDialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "打开链接"))
-        self.pushButton_test.setText(_translate("Dialog", "连接测试"))
-        self.pushButton_save.setText(_translate("Dialog", "保存"))
-        self.pushButton_cancle.setText(_translate("Dialog", "取消"))
-        self.pushButton_open.setText(_translate("Dialog", "打开"))
-        self.label_conname.setText(_translate("Dialog", "链接名:"))
-        self.lineEdit_conname.setPlaceholderText(_translate("Dialog", "本地链接"))
-        self.label_hostname.setText(_translate("Dialog", "主机名或者IP:"))
-        self.lineEdit_hostname.setPlaceholderText(_translate("Dialog", "127.0.0.1"))
-        self.label_port.setText(_translate("Dialog", "端口:"))
-        self.lineEdit_port.setPlaceholderText(_translate("Dialog", "3306"))
-        self.label_username.setText(_translate("Dialog", "用户名:"))
-        self.lineEdit_user.setPlaceholderText(_translate("Dialog", "root"))
-        self.label_password.setText(_translate("Dialog", "密码:"))
-        self.lineEdit_password.setPlaceholderText(_translate("Dialog", "root"))
+        ConnDialog.setWindowTitle(_translate("ConnDialog", "打开链接"))
+        self.pushButton_test.setText(_translate("ConnDialog", "连接测试"))
+        self.pushButton_save.setText(_translate("ConnDialog", "保存"))
+        self.pushButton_cancle.setText(_translate("ConnDialog", "取消"))
+        self.pushButton_open.setText(_translate("ConnDialog", "打开"))
+        self.label_conname.setText(_translate("ConnDialog", "链接名:"))
+        self.lineEdit_conname.setPlaceholderText(_translate("ConnDialog", "本地链接"))
+        self.label_hostname.setText(_translate("ConnDialog", "主机名或者IP:"))
+        self.lineEdit_hostname.setPlaceholderText(_translate("ConnDialog", "127.0.0.1"))
+        self.label_port.setText(_translate("ConnDialog", "端口:"))
+        self.lineEdit_port.setPlaceholderText(_translate("ConnDialog", "3306"))
+        self.label_username.setText(_translate("ConnDialog", "用户名:"))
+        self.lineEdit_user.setPlaceholderText(_translate("ConnDialog", "root"))
+        self.label_password.setText(_translate("ConnDialog", "密码:"))
+        self.lineEdit_password.setPlaceholderText(_translate("ConnDialog", "root"))
+        self.pushButton_new.setText(_translate("ConnDialog", "新建"))
 
