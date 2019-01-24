@@ -7,8 +7,9 @@
 # WARNING! All changes made in this file will be lost!
 
 import sys
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import Qt
 from DBManager import DBManager
 from Config import Config
 from ui.Ui_NewConnDialog import Ui_ConnDialog
@@ -20,16 +21,16 @@ class NewConnDialog(QtWidgets.QDialog,Ui_ConnDialog):
     def __init__(self,conf=None):
         super(NewConnDialog, self).__init__()
         self.setupUi(self)
-        self.retranslateUi(self)        
+        self.retranslateUi(self)      
 
-        self.cursor='';
+        #当前打开的配置游标
+        self.cursor=''
         if conf is not None:
             self.conf=conf
         else:
             self.conf = Config()
         self.listWidget_conn.addItems(self.conf.cfg_list())
-        # self.centralwidget = QtWidgets.QDialog(NewConnDialog)
-        # NewConnDialog.setCentralWidget(self.centralwidget)
+        self.listWidget_conn.setContextMenuPolicy(Qt.CustomContextMenu)
 
 
 
@@ -67,7 +68,6 @@ class NewConnDialog(QtWidgets.QDialog,Ui_ConnDialog):
         self.lineEdit_password.setText(db['password'])
     
     def saveConn(self): 
-        # self.setVisible(True)
         conname=self.lineEdit_conname.text()
         hostname=self.lineEdit_hostname.text()
         port=self.lineEdit_port.text()
@@ -118,6 +118,32 @@ class NewConnDialog(QtWidgets.QDialog,Ui_ConnDialog):
             print(self.cursor)
             self.Signal_OpenDb.emit(self.cursor)
             self.accept()
+
+    def rightClick(self,point):      
+        item=self.listWidget_conn.itemAt(point)
+        if item is None:
+            return
+        self.rightItem=item
+        popMenu = QtWidgets.QMenu(self.listWidget_conn) 
+        popMenu.addAction(QtWidgets.QAction('修改',self.listWidget_conn))
+        popMenu.addAction(QtWidgets.QAction('删除',self.listWidget_conn))
+        popMenu.triggered['QAction*'].connect(self.rightMenu)
+        popMenu.exec_(QtGui.QCursor.pos())
+
+    def rightMenu(self,action):
+        # print(self.rightItem)
+        if action.text()=='修改':
+            self.editConn(self.rightItem)
+        elif action.text()=='删除':
+            self.delConn(self.rightItem)
+        else:
+            pass
+
+    def delConn(self,item):
+        self.listWidget_conn.takeItem(self.listWidget_conn.row(item))
+        self.listWidget_conn.removeItemWidget(item)
+        self.conf.cfg_get(item.text())
+        self.conf.delete_section(item.text())
     
     def closeDialog(self):
         self.close()

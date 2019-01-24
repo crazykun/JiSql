@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Mysql管理工具</string>
+   <string>JiSql-Mysql管理工具</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">

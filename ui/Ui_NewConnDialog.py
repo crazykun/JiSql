@@ -84,11 +84,12 @@ class Ui_ConnDialog(object):
         self.pushButton_open.clicked.connect(ConnDialog.openDb)
         self.pushButton_save.clicked.connect(ConnDialog.saveConn)
         self.pushButton_test.clicked.connect(ConnDialog.testConnect)
+        self.listWidget_conn.customContextMenuRequested['QPoint'].connect(ConnDialog.rightClick)
         QtCore.QMetaObject.connectSlotsByName(ConnDialog)
 
     def retranslateUi(self, ConnDialog):
         _translate = QtCore.QCoreApplication.translate
-        ConnDialog.setWindowTitle(_translate("ConnDialog", "打开链接"))
+        ConnDialog.setWindowTitle(_translate("ConnDialog", "Jisql-新建链接"))
         self.pushButton_test.setText(_translate("ConnDialog", "连接测试"))
         self.pushButton_save.setText(_translate("ConnDialog", "保存"))
         self.pushButton_cancle.setText(_translate("ConnDialog", "取消"))

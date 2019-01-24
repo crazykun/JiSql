@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>打开链接</string>
+   <string>Jisql-新建链接</string>
   </property>
   <widget class="QPushButton" name="pushButton_test">
    <property name="geometry">
@@ -304,6 +304,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>listWidget_conn</sender>
+   <signal>customContextMenuRequested(QPoint)</signal>
+   <receiver>ConnDialog</receiver>
+   <slot>rightClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>39</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>254</x>
+     <y>-2</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>editConn()</slot>
@@ -312,5 +328,6 @@
   <slot>openDb()</slot>
   <slot>saveConn()</slot>
   <slot>testConnect()</slot>
+  <slot>rightClick()</slot>
  </slots>
 </ui>

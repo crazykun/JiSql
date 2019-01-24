@@ -151,7 +151,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Mysql管理工具"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "JiSql-Mysql管理工具"))
         self.pushButton.setText(_translate("MainWindow", "执行"))
         self.label_page.setText(_translate("MainWindow", "共1000条,共10页,当前第1页"))
         self.toolButton_page_first.setText(_translate("MainWindow", "|<"))
