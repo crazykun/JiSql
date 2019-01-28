@@ -75,10 +75,10 @@ class DBManager():
                 columns.append(self.query.value(0))
         return columns
 
-    def getList(self,table,header):
+    def getList(self,table,header,page=1,pagesize=100):
         model=QSqlQueryModel()
         # model.setTable(table)
-        model.setQuery('select * from %s limit 100' % (table),self.db)
+        model.setQuery('select * from %s limit %s,%s' % (table,(page-1)*pagesize,pagesize),self.db)
         i=0
         for h in header:
             model.setHeaderData(i,Qt.Horizontal,h)
