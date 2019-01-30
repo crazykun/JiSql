@@ -13,6 +13,8 @@ from DBManager import DBManager
 from Config import Config
 
 
+
+
 class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(Ui_MainWindow, self).__init__()
@@ -25,11 +27,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.conf = Config()  # 当前数据库的配置
         self.currentDB = ''  # 当前数据库类
         self.currentDBIndex = ''  # 当前数据库类 序号
-        self.openDBs = []  # 所有打开的数据库
+        self.currentTabWidget=''
+        self.openDBs = []  # 所有打开的数据库db
+        self.openConNameList = []  # 所有打开的数据名字列表
         self.currentTable = ''  # 当前打开的表
         self.openTables = []  # 所有打开的表
         self.currentLine = ''  # 当前行
         self.treeWidgets=[]
+        self.pages='' #分页组件
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -47,13 +52,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
         self.centralwidget.setSizePolicy(sizePolicy)
         self.centralwidget.setObjectName("centralwidget")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout_main = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout_main.setObjectName("verticalLayout_main")
 
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName("tabWidget")
         self.tabWidget.setTabsClosable(True)
-        self.verticalLayout_2.addWidget(self.tabWidget)
+        self.verticalLayout_main.addWidget(self.tabWidget)
 
         self.pushButton_open = QtWidgets.QPushButton(MainWindow)
         self.pushButton_open.setText("打开")
@@ -106,6 +111,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+        self.tabWidget.tabCloseRequested['int'].connect(self.closeDbTab)
+        
+        MainWindow.setCentralWidget(self.centralwidget)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Mysql数据库管理工具"))
@@ -137,101 +146,104 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def openConn(self, conname):
-        conf = self.conf.cfg_get(conname)
-        try:
-            self.currentDB = DBManager(conf['conname'], conf['hostname'], conf['port'], conf['user'], conf['password'])
-        except:
-            self.conn.closeDialog()
-            QMessageBox.warning(self, '提醒','配置参数有误')
-            return
-        re = self.currentDB.testConnect()
-        if(re != 'Success'):
-            self.conn.closeDialog()
-            QMessageBox.information(self, '链接失败', re)
-            return
-        index = len(self.openDBs)
-        self.currentDBIndex = index
-        self.openDBs.append(self.currentDB)
-        dbList=self.currentDB.showDBs()  
-
-        if(index == 0):
-            self.setupBaseUi(self,dbList)
+        if conname in self.openConNameList:
+            self.currentDBIndex=self.openConNameList.index(conname)
+            print(self.currentDBIndex)
+            self.tabWidget.setCurrentIndex( self.currentDBIndex)
         else:
-            self.addTablesTab(conname)
-            self.setupDbTree(index,dbList)
-        self.tabWidget.setTabText(index,conname)
-        self.tabWidget.setCurrentIndex(index)
+            conf = self.conf.cfg_get(conname)
+            try:
+                self.currentDB = DBManager(conf['conname'], conf['hostname'], conf['port'], conf['user'], conf['password'])
+            except:
+                self.conn.closeDialog()
+                QMessageBox.warning(self, '提醒','配置参数有误')
+                return
+            re = self.currentDB.testConnect()
+            if(re != 'Success'):
+                self.conn.closeDialog()
+                QMessageBox.information(self, '链接失败', re)
+                return            
+            dbList=self.currentDB.showDBs()  
+            #初始化界面
+            self.setupBaseUi(dbList)   
+            index = len(self.openDBs)
+            self.currentDBIndex = index
+            self.openDBs.append(self.currentDB)
+            self.openConNameList.append(conname)
+            self.tabWidget.setTabText(index,conname)
+            self.tabWidget.setCurrentIndex(index)
        
 
-    def setupBaseUi(self,MainWindow,dbList):
-        self.pushButton_open.hide()       
-
+    def setupBaseUi(self,dbList):
+        tab_index=len(self.openDBs)
+        if  tab_index is 0:
+            self.pushButton_open.hide()       
         #大tab页
-        self.tab = QtWidgets.QWidget()
-        self.tab.setObjectName("tab")        
-        self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.tab)
-        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        tab_new = QtWidgets.QWidget()
+        tab_new.setObjectName("tab"+str(tab_index))        
+        horizontalLayout_tab_body = QtWidgets.QHBoxLayout(tab_new)
+        horizontalLayout_tab_body.setObjectName("horizontalLayout_tab_body"+str(tab_index))
+        horizontalLayout_tab_main = QtWidgets.QHBoxLayout()
+        horizontalLayout_tab_main.setObjectName("horizontalLayout_tab_main"+str(tab_index))
 
         #添加tree
-        self.setupDbTree(0,dbList)
+        tree=self.setupDbTree(tab_index,dbList)
+        horizontalLayout_tab_main.addWidget(tree)
         
         #右侧
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.textEdit = QtWidgets.QTextEdit(self.tab)
+        verticalLayout_right_main = QtWidgets.QVBoxLayout()
+        verticalLayout_right_main.setObjectName("verticalLayout_right_main"+str(tab_index))
+        horizontalLayout_search_bar = QtWidgets.QHBoxLayout()
+        horizontalLayout_search_bar.setObjectName("horizontalLayout_search_bar"+str(tab_index))
+        textEdit_search_input = QtWidgets.QTextEdit(tab_new)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.textEdit.sizePolicy().hasHeightForWidth())
-        self.textEdit.setSizePolicy(sizePolicy)
-        self.textEdit.setMinimumSize(QtCore.QSize(0, 60))
-        self.textEdit.setObjectName("textEdit")
-        self.horizontalLayout_2.addWidget(self.textEdit)
-        self.pushButton = QtWidgets.QPushButton(self.tab)
-        self.pushButton.setText("执行")
+        sizePolicy.setHeightForWidth(textEdit_search_input.sizePolicy().hasHeightForWidth())
+        textEdit_search_input.setSizePolicy(sizePolicy)
+        textEdit_search_input.setMinimumSize(QtCore.QSize(0, 60))
+        textEdit_search_input.setObjectName("textEdit"+str(tab_index))
+        horizontalLayout_search_bar.addWidget(textEdit_search_input)
+        pushButton_search_btn = QtWidgets.QPushButton(tab_new)
+        pushButton_search_btn.setText("执行")
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
-        self.pushButton.setSizePolicy(sizePolicy)
-        self.pushButton.setMinimumSize(QtCore.QSize(60, 60))
-        self.pushButton.setObjectName("pushButton")
-        # self.pushButton.setStyleSheet("background:qlineargradient(spread:reflect, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255))")
-        self.horizontalLayout_2.addWidget(self.pushButton)
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.tabWidget_2 = QtWidgets.QTabWidget(self.tab)
-        self.tabWidget_2.setObjectName("tabWidget_2")
-        self.verticalLayout.addWidget(self.tabWidget_2)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
+        sizePolicy.setHeightForWidth(pushButton_search_btn.sizePolicy().hasHeightForWidth())
+        pushButton_search_btn.setSizePolicy(sizePolicy)
+        pushButton_search_btn.setMinimumSize(QtCore.QSize(60, 60))
+        pushButton_search_btn.setObjectName("pushButton"+str(tab_index))
+        # pushButton_search_btn.setStyleSheet("background:qlineargradient(spread:reflect, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255))")
+        horizontalLayout_search_bar.addWidget(pushButton_search_btn)
+        verticalLayout_right_main.addLayout(horizontalLayout_search_bar)
+        tabWidget_tableslist = QtWidgets.QTabWidget(tab_new)
+        tabWidget_tableslist.setObjectName("tabWidget_tableslist"+str(tab_index))
+        tabWidget_tableslist.setTabsClosable(True)
 
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.verticalLayout.setStretch(1, 1)
+        verticalLayout_right_main.addWidget(tabWidget_tableslist)   
+        horizontalLayout_tab_main.addLayout(verticalLayout_right_main)
+        horizontalLayout_tab_body.addLayout(horizontalLayout_tab_main)
 
-        self.horizontalLayout_4.addLayout(self.verticalLayout)
-        self.horizontalLayout_5.addLayout(self.horizontalLayout_4)
+        self.tabWidget.addTab(tab_new, "")      
+        self.currentTabWidget=tabWidget_tableslist
         
-        self.tabWidget.addTab(self.tab, "")        
+        tabWidget_tableslist.tabCloseRequested['int'].connect(self.closeTablesTab)
 
-        self.tabWidget.tabCloseRequested['int'].connect(self.closeDbTab)
-        self.tabWidget_2.tabCloseRequested['int'].connect(self.closeTablesTab)
-
-        MainWindow.setCentralWidget(self.centralwidget)
 
 
     
     def closeDbTab(self,index):
         self.tabWidget.removeTab(index)
+        del self.openDBs[index]
+        del self.openConNameList[index]
+        if len(self.openDBs) is 0:
+            self.tabWidget.hide()
+            self.pushButton_open.show()    
 
+    #左侧树
     def setupDbTree(self, tabIndex,dbList):
         self.treeWidgets.append("treeWidget_"+str(tabIndex))
-        thisItem = QtWidgets.QTreeWidget(self.tab)
+        thisItem = QtWidgets.QTreeWidget()
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -240,8 +252,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         thisItem.setMinimumSize(QtCore.QSize(200, 0))
         thisItem.setObjectName("treeWidget_"+str(tabIndex))
         thisItem.setHeaderHidden(True)
-        self.horizontalLayout_4.addWidget(thisItem)
-
         items=[]
         for x in dbList:            
             i=QtWidgets.QTreeWidgetItem(thisItem)
@@ -250,8 +260,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         thisItem.addTopLevelItems(items)
 
         thisItem.itemDoubleClicked['QTreeWidgetItem*','int'].connect(self.clickTreeItem)
-        # thisItem.show()
-        self.setCentralWidget(thisItem)
+        return thisItem
         
 
     #点击左侧树
@@ -277,40 +286,52 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def setupTableData(self,table,dataModel):
         if table in self.openTables:
             print(self.openTables.index(table))
-            self.tabWidget_2.setCurrentIndex(self.openTables.index(table))
+            self.currentTabWidget.setCurrentIndex(self.openTables.index(table))
         else:
             this = self.__dict__
-            num=len(self.openTables) 
+            table_index=len(self.openTables) 
             tab_tmp = QtWidgets.QWidget()
             tab_tmp.setObjectName("tab_tmp")
-            self.verticalLayout_3 = QtWidgets.QVBoxLayout(tab_tmp)
-            self.verticalLayout_3.setObjectName("verticalLayout_3")
-            self.tableView = QtWidgets.QTableView(tab_tmp)
-            self.tableView.setObjectName("tableView")
-            self.tableView.setModel(dataModel)
-            self.verticalLayout_3.addWidget(self.tableView)
-            self.tabWidget_2.setTabsClosable(True)
-            self.tabWidget_2.addTab(tab_tmp, "")
-            self.tabWidget_2.setTabText(num,table)
-            this['tab_'+str(num)]=tab_tmp
+            verticalLayout_table = QtWidgets.QVBoxLayout(tab_tmp)
+            verticalLayout_table.setObjectName("verticalLayout_table_"+str(table_index))
+            tableView = QtWidgets.QTableView(tab_tmp)
+            tableView.setObjectName("tableView_"+str(table_index))
+            tableView.setModel(dataModel)
+            verticalLayout_table.addWidget(tableView)
+            
+            self.currentTabWidget.addTab(tab_tmp, "")
+            self.currentTabWidget.setTabText(table_index,table)
+            this['table_'+str(table_index)]=tab_tmp
             self.openTables.append(table)
-            self.tabWidget_2.setCurrentIndex(num)
-
-            self.label_page = QtWidgets.QLabel(tab_tmp)
-            self.label_page.setObjectName("label_page")
-            self.horizontalLayout.addWidget(self.label_page)
-            self.toolButton_page_first = QtWidgets.QToolButton(tab_tmp)
-            self.toolButton_page_first.setObjectName("toolButton_page_first")
-            self.horizontalLayout.addWidget(self.toolButton_page_first)
-            self.toolButton_page_before = QtWidgets.QToolButton(tab_tmp)
-            self.toolButton_page_before.setObjectName("toolButton_page_before")
-            self.horizontalLayout.addWidget(self.toolButton_page_before)
-            self.toolButton_page_next = QtWidgets.QToolButton(tab_tmp)
-            self.toolButton_page_next.setObjectName("toolButton_page_next")
-            self.horizontalLayout.addWidget(self.toolButton_page_next)
-            self.toolButton_page_end = QtWidgets.QToolButton(tab_tmp)
-            self.toolButton_page_end.setObjectName("toolButton_page_end")
-            self.horizontalLayout.addWidget(self.toolButton_page_end)
+            self.currentTabWidget.setCurrentIndex(table_index)
+            
+            #初始化分页
+            horizontalLayout_page = QtWidgets.QHBoxLayout()
+            horizontalLayout_page.setObjectName("horizontalLayout_page_"+str(table_index))
+            spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+            horizontalLayout_page.addItem(spacerItem)           
+            label_page = QtWidgets.QLabel(tab_tmp)
+            label_page.setObjectName("label_page")
+            horizontalLayout_page.addWidget(label_page)
+            toolButton_page_first = QtWidgets.QToolButton(tab_tmp)
+            toolButton_page_first.setObjectName("toolButton_page_first_"+str(table_index))
+            horizontalLayout_page.addWidget(toolButton_page_first)
+            toolButton_page_before = QtWidgets.QToolButton(tab_tmp)
+            toolButton_page_before.setObjectName("toolButton_page_before_"+str(table_index))
+            horizontalLayout_page.addWidget(toolButton_page_before)
+            toolButton_page_next = QtWidgets.QToolButton(tab_tmp)
+            toolButton_page_next.setObjectName("toolButton_page_next_"+str(table_index))
+            horizontalLayout_page.addWidget(toolButton_page_next)
+            toolButton_page_end = QtWidgets.QToolButton(tab_tmp)
+            toolButton_page_end.setObjectName("toolButton_page_end_"+str(table_index))
+            horizontalLayout_page.addWidget(toolButton_page_end)
+            label_page.setText("共1000条,共10页,当前第1页")
+            toolButton_page_first.setText("|<")
+            toolButton_page_before.setText("<")
+            toolButton_page_next.setText(">")
+            toolButton_page_end.setText(">|")
+            verticalLayout_table.addLayout(horizontalLayout_page)
+        
 
     #添加表
     def addTablesTab(self,tabName):
@@ -321,9 +342,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     #关闭表
     def closeTablesTab(self,index):
-        table=self.tabWidget_2.tabText(index)
-        self.openTables.remove(table)
-        self.tabWidget_2.removeTab(index)
+        # table=self.currentTabWidget.tabText(index)
+        # self.openTables.remove(table)
+        del self.openTables[index]
+        self.currentTabWidget.removeTab(index)
 
     def aboutQT(self):
         QMessageBox.aboutQt(self,'关于QT')

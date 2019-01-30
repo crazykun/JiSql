@@ -117,14 +117,14 @@
              </layout>
             </item>
             <item>
-             <widget class="QTabWidget" name="tabWidget_2">
+             <widget class="QTabWidget" name="tabWidget_tableslist">
               <property name="currentIndex">
                <number>0</number>
               </property>
               <property name="tabsClosable">
                <bool>true</bool>
               </property>
-              <widget class="QWidget" name="tab_3">
+              <widget class="QWidget" name="tab_table_list">
                <attribute name="title">
                 <string>Tab 1</string>
                </attribute>
@@ -133,7 +133,7 @@
                  <widget class="QTableView" name="tableView"/>
                 </item>
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout">
+                 <layout class="QHBoxLayout" name="horizontalLayout_page">
                   <item>
                    <spacer name="horizontalSpacer">
                     <property name="orientation">
