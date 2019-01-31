@@ -27,14 +27,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.conf = Config()  # 当前数据库的配置
         self.currentDB = ''  # 当前数据库类
         self.currentDBIndex = ''  # 当前数据库类 序号
+        self.currentConname = ''  # 当前链接名字
         self.currentTabWidget=''
-        self.openDBs = []  # 所有打开的数据库db
+        self.openDBClassList = []  # 所有打开的数据库db
         self.openConNameList = []  # 所有打开的数据名字列表
         self.currentTable = ''  # 当前打开的表
         self.openTables = []  # 所有打开的表
         self.currentLine = ''  # 当前行
-        self.treeWidgets=[]
-        self.pages='' #分页组件
+        self.currentTreeWidgets=''
+        self.pagesDataDict={} #分页组件 {'链接名_数据库1_表1':1,'链接名_数据库2_表1':2}
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -112,6 +113,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.tabWidget.tabCloseRequested['int'].connect(self.closeDbTab)
+        self.tabWidget.currentChanged['int'].connect(self.changeDbTab)
         
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -146,9 +148,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def openConn(self, conname):
+        self.currentConname=conname
         if conname in self.openConNameList:
             self.currentDBIndex=self.openConNameList.index(conname)
-            print(self.currentDBIndex)
             self.tabWidget.setCurrentIndex( self.currentDBIndex)
         else:
             conf = self.conf.cfg_get(conname)
@@ -166,16 +168,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             dbList=self.currentDB.showDBs()  
             #初始化界面
             self.setupBaseUi(dbList)   
-            index = len(self.openDBs)
-            self.currentDBIndex = index
-            self.openDBs.append(self.currentDB)
+            index = len(self.openDBClassList)
+            self.currentDBIndex = index            
+            self.openDBClassList.append(self.currentDB)
             self.openConNameList.append(conname)
             self.tabWidget.setTabText(index,conname)
             self.tabWidget.setCurrentIndex(index)
        
 
     def setupBaseUi(self,dbList):
-        tab_index=len(self.openDBs)
+        tab_index=len(self.openDBClassList)
         if  tab_index is 0:
             self.pushButton_open.hide()       
         #大tab页
@@ -234,15 +236,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     
     def closeDbTab(self,index):
         self.tabWidget.removeTab(index)
-        del self.openDBs[index]
+        del self.openDBClassList[index]
         del self.openConNameList[index]
-        if len(self.openDBs) is 0:
+        if len(self.openDBClassList) is 0:
             self.tabWidget.hide()
-            self.pushButton_open.show()    
+            self.pushButton_open.show()   
+
+    def changeDbTab(self,index):
+        tab=self.tabWidget.tabText(index)
+        self.currentConname=tab
+        print(self.tabWidget.widget(0))
 
     #左侧树
     def setupDbTree(self, tabIndex,dbList):
-        self.treeWidgets.append("treeWidget_"+str(tabIndex))
         thisItem = QtWidgets.QTreeWidget()
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -260,6 +266,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         thisItem.addTopLevelItems(items)
 
         thisItem.itemDoubleClicked['QTreeWidgetItem*','int'].connect(self.clickTreeItem)
+        self.currentTreeWidgets=thisItem
         return thisItem
         
 
@@ -277,7 +284,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             item.addChildren(items)
         else:
             #打开表
+            database=item.parent().text(0)
             table=item.text(column)
+            self.currentTable=self.currentConname+'.'+database+'.'+table
+            self.pagesDataDict.get(self.currentConname+'.'+database+'.'+table, 1)
             columns=self.currentDB.showColumns(table)
             dataModel=self.currentDB.getList(table,columns)
             self.setupTableData(table,dataModel)
@@ -285,7 +295,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     #初始化表数据
     def setupTableData(self,table,dataModel):
         if table in self.openTables:
-            print(self.openTables.index(table))
             self.currentTabWidget.setCurrentIndex(self.openTables.index(table))
         else:
             this = self.__dict__
@@ -330,7 +339,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             toolButton_page_before.setText("<")
             toolButton_page_next.setText(">")
             toolButton_page_end.setText(">|")
+            toolButton_page_first.clicked.connect(lambda: self.search(page=1))
+            toolButton_page_before.clicked.connect(lambda: self.search(pagetype='-1'))
+            toolButton_page_next.clicked.connect(lambda: self.search(pagetype='+1'))
+            toolButton_page_end.clicked.connect(lambda: self.search(pagetype='end'))
             verticalLayout_table.addLayout(horizontalLayout_page)
+    
+
+    def search(self,where='',page=1,pagetype='',pagesize=100):
+        print(dir(self.currentTreeWidgets))
         
 
     #添加表

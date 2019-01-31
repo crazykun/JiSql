@@ -147,6 +147,10 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         self.tabWidget_tableslist.setCurrentIndex(0)
+        self.toolButton_page_first.clicked.connect(MainWindow.search)
+        self.toolButton_page_before.clicked.connect(MainWindow.search)
+        self.toolButton_page_next.clicked.connect(MainWindow.search)
+        self.toolButton_page_end.clicked.connect(MainWindow.search)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

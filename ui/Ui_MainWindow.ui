@@ -263,5 +263,76 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>toolButton_page_first</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>search()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>859</x>
+     <y>731</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>856</x>
+     <y>771</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButton_page_before</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>search()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>892</x>
+     <y>731</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>889</x>
+     <y>774</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButton_page_next</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>search()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>919</x>
+     <y>734</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>917</x>
+     <y>775</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButton_page_end</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>search()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>955</x>
+     <y>732</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>953</x>
+     <y>773</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>search()</slot>
+  <slot>search(before)</slot>
+  <slot>search(next)</slot>
+  <slot>search(end)</slot>
+ </slots>
 </ui>
